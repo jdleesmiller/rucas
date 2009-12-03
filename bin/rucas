@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+#
+# Interactive rucas shell based on the standard Interactive Ruby Shell (irb). 
+#
+
+require 'rucas'
+require 'irb'
+
+# Now everything understands symbols.
+include Rucas::Symbolic
+include Rucas
+
+# Helper to print example code.
+def rucas_help_example code
+  puts "> #{code}"
+  puts "   #=> #{$rucas_help_scope.rucas{ Kernel::eval(code) }.inspect}"
+end
+
+# A short help message.
+def rucas_help
+  puts "Interactive rucas is based on the standard Interactive Ruby (irb)."
+  puts "Declare symbolic variables using var."
+  puts "Then you can manipulate them using standard Ruby code."
+  puts ""
+  puts "Examples:"
+  # Run examples in their own scope to avoid clobbering user's stuff.
+  # I was using XMP for this, but it seems to interfere with irb.
+  # The only problem with this approach is that it doesn't allow local
+  # variables, so we can't demo those; we'd have to use @vars.
+  $rucas_help_scope = Scope.new
+  rucas_help_example "var :x"
+  rucas_help_example "var :y"
+  rucas_help_example "var :z"
+  rucas_help_example "(x + 1 - x).simplify.to_s"
+  rucas_help_example "[x, y, z].inject{|s, x| s + x}.to_s"
+  puts ""
+  puts "You can use underscore (_) to get the result of the last command."
+end
+
+puts "-- interactive rucas --"
+puts "To exit, type exit or quit."
+puts "For help, type rucas_help."
+
+#
+# Custom prompt. The best way I've found to do this is to install the RUCAS
+# prompt as the default in irb's initialization routine. Clearly this is not an
+# ideal solution.
+#
+module IRB
+  def IRB.init_config_with_rucas ap_path
+    init_config_without_rucas(ap_path)
+    IRB.conf[:PROMPT][:RUCAS] = {
+          :PROMPT_I => "rucas:%03n:%i> ",
+          :PROMPT_S => "rucas:%03n:%i%l ",
+          :PROMPT_C => "rucas:%03n:%i* ",
+          :RETURN => "%s\n"
+    }
+    IRB.conf[:PROMPT_MODE] = :RUCAS
+  end
+
+  class <<self
+    alias_method :init_config_without_rucas, :init_config
+    alias_method :init_config, :init_config_with_rucas
+  end
+end
+
+IRB.start(__FILE__)
+

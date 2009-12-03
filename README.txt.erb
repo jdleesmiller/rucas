@@ -1,0 +1,157 @@
+<%
+  # This is intended to run against the development version.
+  for d in %w(lib bin)
+    $: << File.join(File.expand_path(File.dirname(__FILE__)), d)
+  end
+%>
+= rucas
+
+http://github.com/jdleesmiller/rucas
+
+== DESCRIPTION
+
+The beginnings of a Computer Algebra System in ruby.
+Supports basic simplification of symbolic expressions over the real numbers.
+Expressions can be entered and manipulated using standard ruby.
+
+This is at a very early stage; many things may change.
+
+== SYNOPSIS
+
+  require 'rubygems'
+  require 'rucas'
+
+  include Rucas
+<%
+  require 'rubygems'
+  require 'rucas'
+  require 'facets/string/word_wrap'
+  include Rucas
+
+  #
+  # Return code (as string) and the resulting output (as string).
+  # Make some effort to format nicely.
+  #
+  def x code
+    # It's nice to put the erb line noise on its own line.
+    code.sub! /^\n/, ''
+    code.rstrip!
+    return "" if code == ""
+
+    output = eval(code).inspect
+
+    # Try to be smart about respecting line widths.
+    code_lines = code.lines.to_a
+    indent = code_lines.map {|l| l =~ /^(\s+)/; $1}.min_by {|s| s.length}
+
+    arrow = "#=> "
+    output_col = 25
+    max_width  = 80
+    code_len = code_lines.last.length
+
+    output_width = max_width - output_col - arrow.length - 1
+    wrapped_output = output.word_wrap(output_width)
+    wrapped_output = wrapped_output.take(1) +
+      wrapped_output.drop(1).map {|l| " "*(arrow.length+1+output_col) + l}
+    wrapped_output = wrapped_output.join.rstrip!
+    start = code_lines.reverse.drop(1).reverse.join
+    "#{start}%-#{output_col}s #{arrow}#{wrapped_output}" % code_lines.last
+  end
+
+  #  puts ((x + 1 - x)**y).simplify  # ==> 1
+  #  puts (x + 1).with(x => 2).value # ==> 3
+%>
+  # basic algebraic simplification
+<%=x %q{
+  with_rucas {
+    var :x
+    var :y
+    ((x + 1 - x)**y).simplify
+  }.to_s
+}%>
+
+  # manipulate symbols using standard ruby code
+<%=x %q{
+  with_rucas {
+    var :x
+    var :y
+    var :z
+    foo = [x,y,z].inject {|s,e| s + e}
+    foo ** 2
+  }.to_s
+}%>
+
+  # build symbolics into ruby objects
+<%=x %q{
+  class Foo
+    include Rucas::Symbolic
+    def initialize
+      var :p
+      var :q
+    end
+
+    def bar
+      (p + 1) / (q - p)
+    end
+  end
+  Foo.new.bar.to_s
+}%>
+
+  # build expression trees
+<%=x %q{
+  with_rucas {
+    var :p
+    1 + p
+  }
+}%>
+
+== NOTES
+
+* Run an interactive session with the +rucas+ command; the interactive rucas is built on irb.
+* The implementation is based on the source code for Norvig's Paradigms of AI Programming (PAIP), but rucas is not yet as complete as the macsyma in Norvig's book.
+
+== PROBLEMS
+
+* Simplification is quite dumb, because it doesn't understand much about commutativity and associativity.
+* Doesn't do differentiation or integration (but could in the future).
+* Doesn't support special functions (but could in the future).
+* Doesn't integrate with other CAS systems (e.g. maxima) (but could in the future).
+* Doesn't do anything with logical conditions on variables (e.g. x > 0).
+
+== INSTALL
+
+On *nix systems,
+
+  sudo gem install rucas
+
+should do it.
+
+To run the interactive rucas, you should just be able to type +rucas+. If it doesn't work, you may need to change your PATH settings. The procedure for this is currently to run
+  gem env
+and look at the EXECUTABLE DIRECTORY; then run
+  echo $PATH
+and make sure that the executable directory is on your path. If it's not, you will have to add it (search for "add directory to path").
+
+== LICENSE
+
+Copyright (c) 2009 John Lees-Miller
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+

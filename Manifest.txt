@@ -1,0 +1,14 @@
+.autotest
+History.txt
+Manifest.txt
+README.txt
+README.txt.erb
+Rakefile
+bin/rucas
+lib/rucas.rb
+lib/rucas/extensions.rb
+lib/rucas/rewrite.rb
+lib/rucas/simplify.rb
+lib/rucas/symbolic.rb
+lib/rucas/utility.rb
+test/test_rucas.rb
