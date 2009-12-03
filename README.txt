@@ -1,7 +1,7 @@
 
 = rucas
 
-http://github.com/jdleesmiller/rucas
+http://rucas.rubyforge.org
 
 == DESCRIPTION
 

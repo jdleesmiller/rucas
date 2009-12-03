@@ -7,9 +7,8 @@ require 'erb'
 Hoe.spec 'rucas' do |spec|
   developer('John Lees-Miller', 'jdleesmiller@gmail.com')
   spec.description = 'The beginnings of a computer algebra system in ruby.'
+  spec.remote_rdoc_dir = '' # release to root
   extra_deps << ['facets']
-
-  # self.rubyforge_name = 'rucasx' # if different than 'rucas'
 end
 
 desc "run bin/rucas"
