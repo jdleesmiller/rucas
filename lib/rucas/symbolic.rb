@@ -16,8 +16,6 @@ module Rucas
       var
     end
 
-    CONST_CLASSES = [Fixnum, Float, Bignum] 
-
     #
     # Symbolic expression; subclasses represent various kinds of expressions.
     #
@@ -35,10 +33,19 @@ module Rucas
       # omits parentheses when operator precedence rules allow.
       def to_s_paren; to_s end
 
+      # Make expressions like "1 + x" work -- there is no + method on Fixnum,
+      # but Ruby calls <tt>x.coerce(1)</tt> so we can provide an appropriate
+      # method. Note that this doesn't work for all operators -- see
+      # rucas/extensions.rb.
+      def coerce lhs
+        [Expr.make(lhs), self]
+      end
+
+      # Construct expression to wrap +e+, if necessary.
       def self.make e
         return e                if e.is_a?(Expr)
-        return ConstExpr.new(e) if CONST_CLASSES.any? {|t| e.is_a?(t)}
-        raise "#{e} is not a symbolic expression"
+        return ConstExpr.new(e) if e.is_a?(Numeric)
+        raise "#{e} is not a numeric constant or a symbolic expression"
       end
     end
 
@@ -75,7 +82,11 @@ module Rucas
         [%w(**),
          %w(~@ +@ -@),
          %w(* / %),
-         %w(+ -)]
+         %w(+ -),
+         %w(&),
+         %w(^ |),
+         %w(<= < > >=),
+         %w(=~)]
 
       #
       # Operator precedence; you shouldn't rely on the numbers, but (barring
@@ -175,6 +186,14 @@ module Rucas
     class DivExpr < ArithmeticOpExpr; end
     class PowExpr < ArithmeticOpExpr; end
 
+    ARITHMETIC_OPS = {
+      :+  => :AddExpr,
+      :-  => :SubExpr,
+      :*  => :MulExpr,
+      :/  => :DivExpr,
+      :** => :PowExpr
+    }
+
     # Comparison
     class CompareOpExpr < BinaryOpExpr ; end
     class EqExpr < CompareOpExpr ; end
@@ -183,29 +202,25 @@ module Rucas
     class GTExpr < CompareOpExpr ; end
     class GTEqExpr < CompareOpExpr ; end
 
-    # Logic -- see comments below
-    #class BooleanOpExpr < BinaryOpExpr ; end
-    #class AndExpr < BooleanOpExpr ; end
-    #class OrExpr < BooleanOpExpr ; end
-
-    BINARY_OPS = {
-      :+  => :AddExpr,
-      :-  => :SubExpr,
-      :*  => :MulExpr,
-      :/  => :DivExpr,
-      :** => :PowExpr,
+    COMPARE_OPS = {
       :=~ => :EqExpr,   # =, == and === are all taken!
       :<  => :LTExpr,
       :<= => :LTEqExpr,
       :>  => :GTExpr,
-      :>= => :GTEqExpr}
+      :>= => :GTEqExpr
+    }
 
-      # Note: can use & and | for logic, but there are problems with
-      # precedence: it binds before the (in)equality symbols. Also need to
-      # change the simplification code to treat them specially. This needs more
-      # thinking. 
-#      :&  => :AndExpr,
-#      :|  => :OrExpr}
+    # Logic -- see comments below
+    class BooleanOpExpr < BinaryOpExpr ; end
+    class AndExpr < BooleanOpExpr ; end
+    class OrExpr < BooleanOpExpr ; end
+
+    BOOLEAN_OPS = {
+      :&  => :AndExpr,
+      :|  => :OrExpr
+    }
+
+    BINARY_OPS = ARITHMETIC_OPS.merge(COMPARE_OPS).merge(BOOLEAN_OPS)
 
     for op, op_class in BINARY_OPS
       class_eval %Q{

@@ -151,15 +151,16 @@ class TestRucas < Test::Unit::TestCase
 
   def test_unpatch
     # Patches are initially applied; unapply and then reapply.
+    assert_equal "1",             with_rucas { 1.simplify }.to_s
     Rucas::Extensions.unapply
-    assert_raise(TypeError) { with_rucas { var :x; 1 + x } }
+    assert_raise(NoMethodError) { with_rucas { 1.simplify } }
     Rucas::Extensions.apply
-    assert_equal "1 + x",     with_rucas { var :x; 1 + x }.to_s
+    assert_equal "1",             with_rucas { 1.simplify }.to_s
     # Do it again to make sure it's really reversible.
     Rucas::Extensions.unapply
-    assert_raise(TypeError) { with_rucas { var :x; 1 + x } }
+    assert_raise(NoMethodError) { with_rucas { 1.simplify } }
     Rucas::Extensions.apply
-    assert_equal "1 + x",     with_rucas { var :x; 1 + x }.to_s
+    assert_equal "1",             with_rucas { 1.simplify }.to_s
   end
 
   def test_match
@@ -212,5 +213,11 @@ class TestRucas < Test::Unit::TestCase
     assert !binding # matching is not currently recursive
     binding = s.rucas {(0 + x).match(0 + (a + 1))}
     assert_equal s.a + 1, binding[s.x]
+  end
+
+  # Test inequality chaining trick.
+  def test_inequality_chaining
+    #p @s.rucas {1 < x < 2}
+    #axes("(1 < x) & (x < 10)") {1 < x < 10} -- ?? maybe
   end
 end
