@@ -34,9 +34,7 @@ module Rucas
       def to_s_paren; to_s end
 
       # Make expressions like "1 + x" work -- there is no + method on Fixnum,
-      # but Ruby calls <tt>x.coerce(1)</tt> so we can provide an appropriate
-      # method. Note that this doesn't work for all operators -- see
-      # rucas/extensions.rb.
+      # but Ruby calls <tt>x.coerce(1)</tt> so we can intervene.
       def coerce lhs
         [Expr.make(lhs), self]
       end
@@ -196,10 +194,10 @@ module Rucas
 
     # Comparison
     class CompareOpExpr < BinaryOpExpr ; end
-    class EqExpr < CompareOpExpr ; end
-    class LTExpr < CompareOpExpr ; end
+    class EqExpr   < CompareOpExpr ; end
+    class LTExpr   < CompareOpExpr ; end
     class LTEqExpr < CompareOpExpr ; end
-    class GTExpr < CompareOpExpr ; end
+    class GTExpr   < CompareOpExpr ; end
     class GTEqExpr < CompareOpExpr ; end
 
     COMPARE_OPS = {
@@ -213,7 +211,7 @@ module Rucas
     # Logic -- see comments below
     class BooleanOpExpr < BinaryOpExpr ; end
     class AndExpr < BooleanOpExpr ; end
-    class OrExpr < BooleanOpExpr ; end
+    class OrExpr  < BooleanOpExpr ; end
 
     BOOLEAN_OPS = {
       :&  => :AndExpr,
