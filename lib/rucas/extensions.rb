@@ -22,7 +22,7 @@ end
 
 module Rucas
   module Extensions
-    # Patch system classes to make constants work with vars (e.g. 0 + x).
+    # Patch system classes to make constants work with vars (e.g. 1.simplify).
     def self.apply
       Numeric.class_eval do
         alias_method :method_missing_without_rucas, :method_missing
