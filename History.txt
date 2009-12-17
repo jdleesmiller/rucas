@@ -1,2 +1,6 @@
 === 0.0.1 2009-12-03
 * initial release
+
+=== 0.0.2 2009-12-16
+* now using coerce (http://c2.com/cgi/wiki?RubyCoerce) to avoid patching so many of the Numeric classes; thanks to Ravil Bayramgalin (http://github.com/brainopia) for pointing this out.
+
