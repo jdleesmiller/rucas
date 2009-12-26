@@ -8,7 +8,7 @@ class Numeric
 
   # Try to convert to ConstExpr if can't find method (e.g. +simplify+).
   def method_missing_with_rucas method, *args, &block
-    method_missing_without_rucas(method *args, &block)
+    method_missing_without_rucas(method, *args, &block)
   rescue NoMethodError
     error = $!
     begin
