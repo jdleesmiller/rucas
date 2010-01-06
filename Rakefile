@@ -11,6 +11,11 @@ Hoe.spec 'rucas' do |spec|
   extra_deps << ['facets']
 end
 
+desc "docs with yard"
+task :yard do
+  system "yardoc -o yard --main README.txt"
+end
+
 desc "run bin/rucas"
 task :run do
   system "/usr/bin/ruby1.8 -w -Ilib:ext:bin:test -rubygems bin/rucas"
