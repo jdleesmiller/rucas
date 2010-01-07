@@ -14,6 +14,7 @@ class TestRucas < Test::Unit::TestCase
       var :z
       var :a
       var :b
+      symfun :f 
     }
   end
 
@@ -46,6 +47,12 @@ class TestRucas < Test::Unit::TestCase
     assert  s1.respond_to?(:a)
     assert  s1.respond_to?(:b)
     assert  s1.respond_to?(:c)
+  end
+
+  # Can refer to Ruby variables in enclosing scope.
+  def test_local_vars_and_scopes
+    foo = 123
+    axes("123 + x") {foo + x}
   end
 
   # Basic operations; human-readable string conversions.
@@ -132,6 +139,15 @@ class TestRucas < Test::Unit::TestCase
     axes_simplify("x + 3")          {(x + 1) + 2}
   end
 
+  def test_functions
+    axes("f[x]")     {f[x]}
+    axes("f[x, y]")  {f[x, y]}
+    axes("f[x + 0]") {f[x + 0]}
+
+    axes_simplify("f[x]")    {f[x + 0]}
+    axes_simplify("f[x, y]") {f[x + 0, y / 1]}
+  end
+
   # The tests from Norvig's Paradigms of AI Programming.
   def test_paip
     # 8.2: Simplification Rules
@@ -140,7 +156,7 @@ class TestRucas < Test::Unit::TestCase
     axes_simplify("0")              {5 * x - (4 + 1) * x}
     axes_simplify("0")              {y / z * (5 * x - (4 + 1) * x)}
     axes_simplify("x")              {(4 - 3) * x + (y / y - 1) * z}
-    # ((simp '(1 * f(x) + 0)) => (F X) )
+    axes_simplify("f[x]")           {1 * f[x] + 0}
     
     # 8.3 Associativity and Commutativity
     # NB: the rest of these PAIP tests fail -- see "things that don't simplify"

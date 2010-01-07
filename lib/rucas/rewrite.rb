@@ -139,6 +139,21 @@ module Rucas
         eval "(#{lv})#{self.op}(#{rv})" if lv && rv
       end
     end
+
+    class FunctionExpr
+      def rewrite pattern, output
+        # Rewrite arguments.
+        new_arguments = self.arguments.map{|a| a.rewrite(pattern, output)}
+        new_self = self.class.new(self.function, new_arguments)
+        bindings = pattern.match(new_self)
+        return output.with(bindings) if bindings
+        new_self
+      end
+
+      def with bindings
+        self.class.new(self.function, self.arguments.map{|a| c.with(bindings)})
+      end
+    end
   end
 end
 

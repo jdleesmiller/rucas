@@ -2,13 +2,13 @@ require 'rucas/utility'
 require 'rucas/symbolic'
 require 'rucas/extensions'
 
+#
+# Open classes to make constants work.
+#
+Rucas::Extensions.apply
+
 module Rucas
   VERSION = '0.0.2'
-
-  #
-  # Open classes to make constants work.
-  #
-  Extensions.apply
 
   #
   # Scope storing currently declared variables.

@@ -64,6 +64,15 @@ module Rucas
       rule( -x + x      => 0    )
       rule( x + y - x   => y    )
       rule( x - y - x   => -y   )
+#      rule( log[1]      => 0    )
+#      rule( log[0]      => nan  )
+#      rule( log[E]      => 1    )
+#      rule( log[exp[x]] => x    )
+#      rule( exp[log[x]] => x    )
+      rule( (x ** y) * (x ** z) => x ** (y + z) )
+      rule( (x ** y) / (x ** z) => x ** (y - z) )
+#      rule( log[x] + log[y]     => log[x * y] )
+#      rule( log[x] - log[y]     => log[x / y] )
 
       # These rules are helpful for "rebalancing" long trees, which can make
       # some of the rules above effective. This is because we don't actually

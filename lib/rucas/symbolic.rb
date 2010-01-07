@@ -6,7 +6,7 @@ module Rucas
     include Utility
 
     #
-    # Define variable in this scope and return it.
+    # Define variable in current scope and return it.
     #
     def var name
       var = VarExpr.new(name)
@@ -14,6 +14,17 @@ module Rucas
         var
       end
       var
+    end
+
+    #
+    # Define function symbol in current scope and return it.
+    #
+    def symfun name
+      fs = SymbolicFunction.new(name)
+      meta_def fs.name do
+        fs
+      end
+      fs
     end
 
     #
@@ -33,8 +44,8 @@ module Rucas
       # omits parentheses when operator precedence rules allow.
       def to_s_paren; to_s end
 
-      # Make expressions like "1 + x" work -- there is no + method on Fixnum,
-      # but Ruby calls <tt>x.coerce(1)</tt> so we can intervene.
+      # Make expressions like "1 + x" work -- there is no suitable + method on
+      # Fixnum, but Ruby calls <tt>x.coerce(1)</tt> so we can intervene.
       def coerce lhs
         [Expr.make(lhs), self]
       end
@@ -246,6 +257,39 @@ module Rucas
     class PowExpr
       # Reduce spacing between base and exponent.
       def op_string; self.op.to_s end
+    end
+
+    #
+    # The name of a function, like "log".
+    # Function names are not expressions, but, when arguments are supplied, the 
+    # result is a function expression. 
+    # This means that you can't write "log * 2", but you can write "log[x] * 2";
+    # note that square brackets are required where one would normally use
+    # parentheses ("log(x)" must be written "log[x]").
+    #
+    SymbolicFunction = Struct.new(:name)
+    class SymbolicFunction
+      def [] *arguments
+        raise "function must have at least one argument" if arguments.empty?
+        FunctionExpr.new(self, arguments)
+      end
+      def to_s; name.to_s; end
+    end
+
+    #
+    # The application of {function} to {arguments}, like "log[x]".
+    #
+    FunctionExpr = Struct.new(:function, :arguments)
+    class FunctionExpr
+      include Expr
+
+      def name
+        "#{function}[#{arguments.join(', ')}]"
+      end
+
+      def children; arguments end
+      def to_s; name.to_s end
+      def constant?; false end
     end
   end
 end
