@@ -53,14 +53,6 @@ module Rucas
     def match expr, bindings = {}
       nil # see subclasses
     end
-
-    #
-    # If this expression involves only constants, evaluate it and return the
-    # result; if it is not, return nil.
-    #
-    def value
-      nil # see subclasses
-    end
   end
 
   module OpExpr
@@ -115,11 +107,6 @@ module Rucas
       return nil unless self.op == expr.op
       rhs.match(expr.rhs, bindings)
     end
-
-    def value
-      v = rhs.value
-      eval "(#{v}).#{self.op}" if v
-    end
   end
 
   class BinaryOpExpr
@@ -130,12 +117,6 @@ module Rucas
         return rb if rb
       end
       nil
-    end
-
-    def value
-      lv = lhs.value
-      rv = rhs.value
-      eval "(#{lv})#{self.op}(#{rv})" if lv && rv
     end
   end
 

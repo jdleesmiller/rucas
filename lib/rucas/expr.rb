@@ -1,6 +1,7 @@
 module Rucas
   #
   # Symbolic expression; subclasses represent various kinds of expressions.
+  # These are used to construct trees from ruby expressions.
   #
   module Expr
     # Children in the expression tree, if any. For example, an AddExpr returns
@@ -20,6 +21,12 @@ module Rucas
     # Fixnum, but Ruby calls <tt>x.coerce(1)</tt> so we can intervene.
     def coerce lhs
       [Expr.make(lhs), self]
+    end
+
+    # If this expression involves only constants, evaluate it and return the
+    # result; if it is not, return nil.
+    def value
+      nil # see subclasses
     end
 
     # Construct expression to wrap +e+, if necessary.
@@ -100,6 +107,11 @@ module Rucas
     def to_s_paren
       "#{self.op}(#{self.rhs.to_s_paren})"
     end
+
+    def value
+      v = rhs.value
+      eval "(#{v}).#{self.op}" if v
+    end
   end
 
   class PosExpr < UnaryOpExpr
@@ -152,6 +164,12 @@ module Rucas
       inner = self.children.map{|c|
         c.precedence < self.precedence ? "(#{c})" : c.to_s}
       "#{inner.join(self.op_string)}"
+    end
+
+    def value
+      lv = lhs.value
+      rv = rhs.value
+      eval "(#{lv})#{self.op}(#{rv})" if lv && rv
     end
 
     protected
