@@ -28,8 +28,8 @@ module Rucas
       var :w
       var :x
       var :y
-      z = Symbolic::Expr.make(0)
-      nan = Symbolic::Expr.make(0.0/0.0)
+      z = Expr.make(0)
+      nan = Expr.make(0.0/0.0)
 
       # These rules are taken from Norvig's Paradigms of AI Programming
       # (chapter 8). The source for that book is freely available.
@@ -88,23 +88,21 @@ module Rucas
     }
   end
 
-  module Symbolic
-    module Expr
-      #
-      # Return expression after algebraic simplification. Note that this isn't a
-      # very smart simplifier.
-      # 
-      def simplify
-        new_self = self
-        changed = false
-        for pattern, output in Simplify::RULES
-          new_self = new_self.rewrite(pattern, output)
-          #puts "#{pattern}\t#{new_self.to_s_paren}"
-          changed = (new_self != self)
-          break if changed
-        end
-        if changed then new_self.simplify else self end
+  module Expr
+    #
+    # Return expression after algebraic simplification. Note that this isn't a
+    # very smart simplifier.
+    # 
+    def simplify
+      new_self = self
+      changed = false
+      for pattern, output in Simplify::RULES
+        new_self = new_self.rewrite(pattern, output)
+        #puts "#{pattern}\t#{new_self.to_s_paren}"
+        changed = (new_self != self)
+        break if changed
       end
+      if changed then new_self.simplify else self end
     end
   end
 end

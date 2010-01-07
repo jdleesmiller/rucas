@@ -3,7 +3,6 @@ require "rucas"
 
 class TestRucas < Test::Unit::TestCase
   include Rucas
-  include Rucas::Symbolic
 
   def setup
     # Some variables to play with.

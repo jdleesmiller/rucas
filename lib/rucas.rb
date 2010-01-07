@@ -1,4 +1,5 @@
 require 'rucas/utility'
+require 'rucas/expr'
 require 'rucas/symbolic'
 require 'rucas/extensions'
 

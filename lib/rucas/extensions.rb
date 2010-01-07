@@ -12,7 +12,7 @@ class Numeric
   rescue NoMethodError
     error = $!
     begin
-      return Rucas::Symbolic::Expr.make(self).send(method, *args, &block)
+      return Rucas::Expr.make(self).send(method, *args, &block)
     rescue NoMethodError
       nil
     end
