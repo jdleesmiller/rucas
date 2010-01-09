@@ -8,6 +8,7 @@ module Rucas
   #
   module Symbolic
     include Utility
+    extend Utility
 
     #
     # Define variable in current scope and return it.
@@ -29,6 +30,39 @@ module Rucas
         fs
       end
       fs
+    end
+
+    #
+    # Analogue of {Symbolic#var}, but for use in defining packages.
+    #
+    def self.var name
+      var = VarExpr.new(name)
+      meta_def name do
+        var
+      end
+      module_eval do
+        define_method(name) do
+          var
+        end
+      end
+      var
+    end
+
+    #
+    # Analogue of {Symbolic#const}, but for use in defining packages.
+    #
+    def self.const name, value
+      const = ConstExpr.new(name, value)
+      meta_def name do
+        const
+      end
+      module_eval do
+        define_method(name) do
+          const
+        end
+      end
+      p const
+      const
     end
   end
 end

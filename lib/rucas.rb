@@ -47,6 +47,7 @@ module Rucas
   end
 end
 
+require 'rucas/elementary'
 require 'rucas/rewrite'
 require 'rucas/simplify'
 

@@ -148,6 +148,15 @@ class TestRucas < Test::Unit::TestCase
     axes_simplify("f[x, y]") {f[x + 0, y / 1]}
   end
 
+  class FooTest
+    include Rucas::Symbolic
+  end
+
+  def test_elementary
+    p FooTest.new.E
+    p FooTest.new.PI
+  end
+
   # The tests from Norvig's Paradigms of AI Programming.
   def test_paip
     # 8.2: Simplification Rules
