@@ -22,6 +22,17 @@ module Rucas
     end
 
     #
+    # Define a named constant in current scope and return it.
+    #
+    def const name, value
+      const = ConstExpr.new(name, value)
+      meta_def name do
+        const
+      end
+      const
+    end
+
+    #
     # Define function symbol in current scope and return it.
     #
     def symfun name
@@ -61,7 +72,6 @@ module Rucas
           const
         end
       end
-      p const
       const
     end
   end
