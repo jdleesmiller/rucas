@@ -1,7 +1,6 @@
 require 'rucas/utility'
 require 'rucas/expr'
 require 'rucas/symbolic'
-require 'rucas/package'
 require 'rucas/extensions'
 
 require 'facets/enumerable/sum'
