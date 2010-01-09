@@ -52,9 +52,9 @@ This is at a very early stage; many things may change.
   with_rucas {
     var :p
     1 + p
-  }                       #=> #<struct Rucas::Symbolic::AddExpr op=:+,
-                              lhs=#<struct Rucas::Symbolic::ConstExpr value=1>,
-                              rhs=#<struct Rucas::Symbolic::VarExpr name=:p>>
+  }                       #=> #<struct Rucas::AddExpr op=:+, lhs=#<struct
+                              Rucas::ConstExpr value=1>, rhs=#<struct
+                              Rucas::VarExpr name=:p>>
 
 == NOTES
 

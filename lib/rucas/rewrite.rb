@@ -57,23 +57,28 @@ module Rucas
 
   module OpExpr
     def rewrite pattern, output
-      # Rewrite children first. 
+      # Rewrite children first; then create new op expression; then try to match
+      # the pattern here.
       new_children = self.children.map{|c| c.rewrite(pattern, output)}
       new_self = self.class.new(*new_children)
-      # See if it's a constant.
-      v = new_self.value 
-      if v
-        Expr.make(v)
-      else
-        # It's not a constant; try to rewrite using the rule.
-        bindings = pattern.match(new_self)
-        return output.with(bindings) if bindings
-        new_self
-      end
+      bindings = pattern.match(new_self)
+      return output.with(bindings) if bindings
+      new_self
     end
 
     def with bindings
       self.class.new(*self.children.map{|c| c.with(bindings)})
+    end
+  end
+  
+  class LiteralExpr
+    def match expr, bindings = {}
+      return bindings if self == expr
+      return nil
+    end
+
+    def with bindings
+      self
     end
   end
   

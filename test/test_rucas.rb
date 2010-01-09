@@ -131,11 +131,12 @@ class TestRucas < Test::Unit::TestCase
     axes_simplify("y*x**2")         {y*x*x}
   end
 
-  def test_constants
+  def test_literals
     assert_equal nil, @s.rucas {(x + 1).value}
-    assert_equal 3, @s.rucas {(x + 1).with(x => 2).value}
+    assert_equal 3, @s.rucas {(x + 1).with(x => 2).eval_literals.value}
     axes_simplify("x + 2")          {(x + 1) + 1}
     axes_simplify("x + 3")          {(x + 1) + 2}
+    axes_simplify("x + 3")          {x + 1 + 1 + 1}
   end
 
   def test_functions

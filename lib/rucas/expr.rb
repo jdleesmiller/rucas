@@ -31,19 +31,26 @@ module Rucas
 
     # Construct expression to wrap +e+, if necessary.
     def self.make e
-      return e                if e.is_a?(Expr)
-      return ConstExpr.new(e) if e.is_a?(Numeric)
+      return e                  if e.is_a?(Expr)
+      return LiteralExpr.new(e) if e.is_a?(Numeric)
       raise "#{e} is not a numeric constant or a symbolic expression"
     end
   end
 
-  # Numeric constant.
-  ConstExpr = Struct.new(:value)
-  class ConstExpr
+  # Anonymous numeric constant (e.g. 1 or 4.2).
+  LiteralExpr = Struct.new(:value)
+  class LiteralExpr
     include Expr
 
     def to_s; value.to_s end
-    def constant?; true end
+  end
+
+  # Named numeric constant (e.g. E or PI).
+  ConstExpr = Struct.new(:name, :value)
+  class ConstExpr 
+    include Expr
+
+    def to_s; name.to_s end
   end
 
   # Variable (literal).
@@ -52,7 +59,6 @@ module Rucas
     include Expr
 
     def to_s; name.to_s end
-    def constant?; false end
   end
 
   #
@@ -91,8 +97,6 @@ module Rucas
     def precedence
       OP_PRECEDENCE[self.op]
     end
-
-    def constant?; children.all {|c| c.constant?} end
   end
 
   #
@@ -106,11 +110,6 @@ module Rucas
     
     def to_s_paren
       "#{self.op}(#{self.rhs.to_s_paren})"
-    end
-
-    def value
-      v = rhs.value
-      eval "(#{v}).#{self.op}" if v
     end
   end
 
@@ -164,12 +163,6 @@ module Rucas
       inner = self.children.map{|c|
         c.precedence < self.precedence ? "(#{c})" : c.to_s}
       "#{inner.join(self.op_string)}"
-    end
-
-    def value
-      lv = lhs.value
-      rv = rhs.value
-      eval "(#{lv})#{self.op}(#{rv})" if lv && rv
     end
 
     protected
@@ -279,6 +272,5 @@ module Rucas
 
     def children; arguments end
     def to_s; name.to_s end
-    def constant?; false end
   end
 end

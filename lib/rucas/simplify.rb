@@ -96,13 +96,89 @@ module Rucas
     def simplify
       new_self = self
       changed = false
+      # Rule-based simplification.
       for pattern, output in Simplify::RULES
         new_self = new_self.rewrite(pattern, output)
         #puts "#{pattern}\t#{new_self.to_s_paren}"
         changed = (new_self != self)
         break if changed
       end
+      # Get rid of literals.
+      unless changed
+        new_self = new_self.eval_literals
+        changed = (new_self != self)
+      end
       if changed then new_self.simplify else self end
+    end
+
+    #
+    # Recursively evaluate expressions that consist only of literals to produce
+    # a literal answer; for example (x + 1 + 1 + 1).eval_literals returns x + 3.
+    # Note that, if the literals are floating point numbers, this is not exact,
+    # because floating point arithmetic is used.
+    # If the literals are integers, Ruby guarantees that the result is exact
+    # (it uses arbitrary precision integers, if necessary).
+    # Named constants (e.g. E and PI) are not treated as literals.
+    #
+    def eval_literals
+      raise NotImplementedError
+    end
+  end
+
+  class LiteralExpr
+    def eval_literals
+      self
+    end
+  end
+
+  class ConstExpr
+    def eval_literals
+      # A named constant (e.g. E and PI) is NOT treated as a literal.
+      self
+    end
+  end
+
+  class VarExpr
+    def eval_literals
+      self
+    end
+  end
+
+  class UnaryOpExpr
+    def eval_literals
+      new_rhs = rhs.eval_literals
+      if new_rhs.is_a?(LiteralExpr)
+        Expr.make(eval("(#{new_rhs}).#{self.op}")) 
+      elsif new_rhs.equal?(rhs)
+        self
+      else
+        self.class.new(new_rhs)
+      end
+    end
+  end
+
+  class BinaryOpExpr
+    def eval_literals
+      new_lhs = lhs.eval_literals
+      new_rhs = rhs.eval_literals
+      if new_lhs.is_a?(LiteralExpr) && new_rhs.is_a?(LiteralExpr)
+        Expr.make(eval("(#{new_lhs})#{self.op}(#{new_rhs})")) 
+      elsif new_lhs.equal?(lhs) && new_rhs.equal?(rhs)
+        self
+      else
+        self.class.new(new_lhs, new_rhs)
+      end
+    end
+  end
+
+  class FunctionExpr
+    def eval_literals
+      new_arguments = arguments.map{|a| a.eval_literals}
+      if arguments.zip(new_arguments).all? {|a,na| a.equal?(na)}
+        self
+      else
+        self.class.new(function, new_arguments)
+      end
     end
   end
 end
