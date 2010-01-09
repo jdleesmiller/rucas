@@ -33,7 +33,7 @@ def rucas_help
   rucas_help_example "var :y"
   rucas_help_example "var :z"
   rucas_help_example "(x + 1 - x).simplify.to_s"
-  rucas_help_example "[x, y, z].inject{|s, x| s + x}.to_s"
+  rucas_help_example "[x, y, z].sum.to_s"
   puts ""
   puts "You can use underscore (_) to get the result of the last command."
 end

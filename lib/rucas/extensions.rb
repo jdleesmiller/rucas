@@ -3,7 +3,7 @@ require 'rucas/symbolic'
 class Numeric
   # Rucas uses the =~ operator for equality expressions.
   def =~ rhs
-    Expr.new(self) =~ rhs
+    Expr.make(self) =~ rhs rescue super
   end
 
   # Try to convert to ConstExpr if can't find method (e.g. +simplify+).

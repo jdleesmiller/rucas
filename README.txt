@@ -30,7 +30,7 @@ This is at a very early stage; many things may change.
     var :x
     var :y
     var :z
-    foo = [x,y,z].inject {|s,e| s + e}
+    foo = [x,y,z].sum
     foo ** 2
   }.to_s                  #=> "(x + y + z)**2"
 
@@ -53,7 +53,7 @@ This is at a very early stage; many things may change.
     var :p
     1 + p
   }                       #=> #<struct Rucas::AddExpr op=:+, lhs=#<struct
-                              Rucas::ConstExpr value=1>, rhs=#<struct
+                              Rucas::LiteralExpr value=1>, rhs=#<struct
                               Rucas::VarExpr name=:p>>
 
 == NOTES
