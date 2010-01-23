@@ -7,7 +7,7 @@ module Rucas
   #
   module Rewrite
     #
-    # Add rules to the end of +dict; see also {#make_rules}.
+    # Add rules to the end of {dict}; see also {make_rules}.
     #
     def self.append_rules_to dict, &block
       s = Scope.new
