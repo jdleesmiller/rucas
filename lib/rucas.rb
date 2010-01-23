@@ -11,7 +11,7 @@ require 'facets/enumerable/sum'
 Rucas::Extensions.apply
 
 module Rucas
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
 
   #
   # Scope storing currently declared variables.
