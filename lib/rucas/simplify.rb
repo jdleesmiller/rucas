@@ -1,5 +1,3 @@
-require 'rucas/rewrite'
-
 module Rucas
   #
   # Simplification; this is still fairly primitive.
@@ -64,15 +62,8 @@ module Rucas
       rule( -x + x      => 0    )
       rule( x + y - x   => y    )
       rule( x - y - x   => -y   )
-#      rule( log[1]      => 0    )
-#      rule( log[0]      => nan  )
-#      rule( log[E]      => 1    )
-#      rule( log[exp[x]] => x    )
-#      rule( exp[log[x]] => x    )
       rule( (x ** y) * (x ** z) => x ** (y + z) )
       rule( (x ** y) / (x ** z) => x ** (y - z) )
-#      rule( log[x] + log[y]     => log[x * y] )
-#      rule( log[x] - log[y]     => log[x / y] )
 
       # These rules are helpful for "rebalancing" long trees, which can make
       # some of the rules above effective. This is because we don't actually
@@ -121,7 +112,7 @@ module Rucas
     # Named constants (e.g. E and PI) are not treated as literals.
     #
     def eval_literals
-      raise NotImplementedError
+      raise NotImplementedError # this method is abstract
     end
   end
 
@@ -133,7 +124,7 @@ module Rucas
 
   class ConstExpr
     def eval_literals
-      # A named constant (e.g. E and PI) is NOT treated as a literal.
+      # A named constant (e.g. e or pi) is NOT treated as a literal.
       self
     end
   end

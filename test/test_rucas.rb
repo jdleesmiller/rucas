@@ -110,6 +110,10 @@ class TestRucas < Test::Unit::TestCase
     axes_simplify("x")         {x/1}
     axes_simplify("1")         {y/y}
     axes_simplify("NaN")       {x/0}
+
+    axes_simplify("NaN")       {0.0/0.0}
+    axes_simplify("NaN")       {0.0/0.0 - 0.0/0.0} # PAIP exercise 8.8
+    axes_simplify("x + NaN")   {x + 0.0/0.0}  # TODO hmm... 
   end
 
   # Simplification identities.
@@ -148,13 +152,20 @@ class TestRucas < Test::Unit::TestCase
     axes_simplify("f[x, y]") {f[x + 0, y / 1]}
   end
 
-  class FooTest
-    include Rucas::Symbolic
-  end
-
   def test_elementary
-    p FooTest.new.E
-    p FooTest.new.PI
+    axes("e")      {e}
+    axes("log[x]") {log[x]}
+    axes("log[e]") {log[e]}
+    axes("log[exp[x]]") {log[exp[x]]}
+
+    axes_simplify("1")   {log[e]}
+    axes_simplify("0")   {log[1]}
+    axes_simplify("NaN") {log[0]}
+    axes_simplify("x")   {log[exp[x]]}
+    axes_simplify("x")   {exp[log[x]]}
+
+    axes_simplify("0")   {log[x + 1 - x]}
+    axes_simplify("x")   {log[exp[1 + x - 1]]}
   end
 
   # The tests from Norvig's Paradigms of AI Programming.

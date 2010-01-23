@@ -46,7 +46,10 @@ module Rucas
   end
 end
 
-require 'rucas/elementary'
+# Load core features.
 require 'rucas/rewrite'
 require 'rucas/simplify'
+
+# Load default packages.
+require 'rucas/elementary'
 

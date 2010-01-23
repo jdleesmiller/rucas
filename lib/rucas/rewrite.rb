@@ -7,6 +7,19 @@ module Rucas
   #
   module Rewrite
     #
+    # Add rules to the end of +dict; see also {#make_rules}.
+    #
+    def self.append_rules_to dict, &block
+      s = Scope.new
+      s.meta_def :rule do |rule|
+        raise unless rule.size == 1
+        dict[rule.keys.first] = Expr.make(rule.values.first)
+      end
+      s.rucas(&block)
+      dict
+    end
+
+    #
     # Construct an ordered hash of rewrite rules.
     #
     # Example:
@@ -17,18 +30,7 @@ module Rucas
     #  }
     #
     def self.make_rules &block
-      s = Scope.new
-      class <<s
-        def dict
-          @dict ||= Dictionary[]
-        end
-        def rule rule
-          raise unless rule.size == 1
-          dict[rule.keys.first] = Expr.make(rule.values.first)
-        end
-      end
-      s.rucas(&block)
-      s.dict
+      self.append_rules_to(Dictionary[], &block)
     end
   end
 
@@ -133,6 +135,17 @@ module Rucas
       bindings = pattern.match(new_self)
       return output.with(bindings) if bindings
       new_self
+    end
+
+    def match expr, bindings = {}
+      if expr.is_a?(FunctionExpr) && self.function == expr.function
+        for self_arg, expr_arg in self.arguments.zip(expr.arguments)
+          break unless bindings
+          bindings = self_arg.match(expr_arg, bindings)
+        end
+        return bindings
+      end
+      nil
     end
 
     def with bindings
