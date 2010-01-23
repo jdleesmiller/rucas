@@ -6,6 +6,8 @@ README.txt.erb
 Rakefile
 bin/rucas
 lib/rucas.rb
+lib/rucas/elementary.rb
+lib/rucas/expr.rb
 lib/rucas/extensions.rb
 lib/rucas/rewrite.rb
 lib/rucas/simplify.rb
