@@ -260,7 +260,7 @@ module Rucas
   end
 
   #
-  # The application of {function} to {arguments}, like "log[x]".
+  # The application of +function+ to +arguments+, like "log[x]".
   #
   FunctionExpr = Struct.new(:function, :arguments)
   class FunctionExpr

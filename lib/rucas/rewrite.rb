@@ -7,7 +7,15 @@ module Rucas
   #
   module Rewrite
     #
-    # Add rules to the end of {dict}; see also {make_rules}.
+    # Add rules to the end of +dict+; see also {make_rules}.
+    #
+    # The order in which rewrite rules are specified is usually important, so
+    # you should pass a Dictionary instead of a Hash for +dict+, for
+    # compatibility with Ruby 1.8.
+    #
+    # @param [Dictionary] dict to append rules to
+    #
+    # @return [Dictionary]
     #
     def self.append_rules_to dict, &block
       s = Scope.new
@@ -22,12 +30,14 @@ module Rucas
     #
     # Construct an ordered hash of rewrite rules.
     #
-    # Example:
+    # @example
     #  my_rules = make_rules {
     #    var :x
     #    rule x + 0 => x
     #    rule 0 + x => x
     #  }
+    #
+    # @return [Dictionary]
     #
     def self.make_rules &block
       self.append_rules_to(Dictionary[], &block)
