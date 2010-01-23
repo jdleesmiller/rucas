@@ -1,8 +1,8 @@
 .autotest
 History.txt
 Manifest.txt
-README.txt
-README.txt.erb
+make_readme.erb
+README.rdoc
 Rakefile
 bin/rucas
 lib/rucas.rb
