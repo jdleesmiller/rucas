@@ -4,6 +4,10 @@
 # TODO add sin, cos, etc.
 #
 
+#
+#
+#
+
 module Rucas
   module Symbolic
     const :e, Math::E
