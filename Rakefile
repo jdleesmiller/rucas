@@ -20,7 +20,7 @@ end
 
 desc "run bin/rucas"
 task :run do
-  system "/usr/bin/ruby1.8 -w -Ilib:ext:bin:test -rubygems bin/rucas"
+  ruby "-w -Ilib:ext:bin:test -rubygems bin/rucas"
 end
 
 desc "patch manifest"
