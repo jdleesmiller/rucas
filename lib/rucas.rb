@@ -41,8 +41,17 @@ module Rucas
   # Interpret code in the block as Rucas code and return the result of the
   # block. 
   #
-  def with_rucas scope=Scope.new, &block
-    scope.rucas(&block)
+  # @example
+  #   require 'rucas'
+  #
+  #   Rucas.code {
+  #     var :x
+  #     var :y
+  #     x + y
+  #   }
+  #
+  def self.code &block
+    Scope.new.rucas(&block)
   end
 end
 

@@ -21,12 +21,10 @@ This is at a very early stage; many things may change.
   require 'rubygems'
   require 'rucas'
 
-  include Rucas
 <%
   require 'rubygems'
   require 'rucas'
   require 'facets/string/word_wrap'
-  include Rucas
 
   #
   # Return code (as string) and the resulting output (as string).
@@ -63,7 +61,7 @@ This is at a very early stage; many things may change.
 %>
   # basic algebraic simplification
 <%=x %q{
-  with_rucas {
+  Rucas.code {
     var :x
     var :y
     ((x + 1 - x)**y).simplify
@@ -72,7 +70,7 @@ This is at a very early stage; many things may change.
 
   # manipulate symbols using standard ruby code
 <%=x %q{
-  with_rucas {
+  Rucas.code {
     var :x
     var :y
     var :z
@@ -99,7 +97,7 @@ This is at a very early stage; many things may change.
 
   # build expression trees
 <%=x %q{
-  with_rucas {
+  Rucas.code {
     var :p
     1 + p
   }
