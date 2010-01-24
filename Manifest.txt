@@ -10,6 +10,7 @@ lib/rucas/elementary.rb
 lib/rucas/expr.rb
 lib/rucas/extensions.rb
 lib/rucas/rewrite.rb
+lib/rucas/scope.rb
 lib/rucas/simplify.rb
 lib/rucas/symbolic.rb
 lib/rucas/utility.rb

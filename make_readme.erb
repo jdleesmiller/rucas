@@ -8,6 +8,8 @@
 
 http://rucas.rubyforge.org
 
+http://github.com/jdleesmiller/rucas
+
 == DESCRIPTION
 
 The beginnings of a Computer Algebra System in ruby.
@@ -20,13 +22,10 @@ This is at a very early stage; many things may change.
 
   require 'rubygems'
   require 'rucas'
-
-  include Rucas
 <%
   require 'rubygems'
   require 'rucas'
   require 'facets/string/word_wrap'
-  include Rucas
 
   #
   # Return code (as string) and the resulting output (as string).
@@ -34,7 +33,7 @@ This is at a very early stage; many things may change.
   #
   def x code
     # It's nice to put the erb line noise on its own line.
-    code.sub! /^\n/, ''
+    code.sub!(/^\n/, '')
     code.rstrip!
     return "" if code == ""
 
@@ -50,7 +49,7 @@ This is at a very early stage; many things may change.
     code_len = code_lines.last.length
 
     output_width = max_width - output_col - arrow.length - 1
-    wrapped_output = output.word_wrap(output_width)
+    wrapped_output = output.word_wrap(output_width).lines
     wrapped_output = wrapped_output.take(1) +
       wrapped_output.drop(1).map {|l| " "*(arrow.length+1+output_col) + l}
     wrapped_output = wrapped_output.join.rstrip!
@@ -63,16 +62,16 @@ This is at a very early stage; many things may change.
 %>
   # basic algebraic simplification
 <%=x %q{
-  with_rucas {
+  Rucas.code {
     var :x
     var :y
-    ((x + 1 - x)**y).simplify
+    ((x + log[e] - x)**y).simplify
   }.to_s
 }%>
 
   # manipulate symbols using standard ruby code
 <%=x %q{
-  with_rucas {
+  Rucas.code {
     var :x
     var :y
     var :z
@@ -99,7 +98,7 @@ This is at a very early stage; many things may change.
 
   # build expression trees
 <%=x %q{
-  with_rucas {
+  Rucas.code {
     var :p
     1 + p
   }
@@ -114,16 +113,15 @@ This is at a very early stage; many things may change.
 
 * Simplification is quite dumb, because it doesn't understand much about commutativity and associativity.
 * Doesn't do differentiation or integration (but could in the future).
-* Doesn't support special functions (but could in the future).
+* Doesn't support many elementary functions (just log and exp and the moment).
 * Doesn't integrate with other CAS systems (e.g. maxima) (but could in the future).
 * Doesn't do anything with logical conditions on variables (e.g. x > 0).
 
 == RELATED PROJECTS
-
 * Sage: http://www.sagemath.org
-  * immeasurably better than rucas in (almost) every way, at present.
+  * A CAS embedded in Python. Sage is much more complete than rucas.
 * ruby symbolic: http://github.com/brainopia/symbolic
-  * pretty much the same idea, but it started a few weeks before rucas, and it's being developed much more rapidly!
+  * Another CAS embedded in Ruby. It started a few weeks before rucas, and it‘s being developed much more rapidly!
 * Mathematics on Ruby: http://blade.nagaokaut.ac.jp/~sinara/ruby/math
   * one- and multi-variate polynomials, rationals, finite sets and maps.
 
@@ -143,7 +141,7 @@ and make sure that the executable directory is on your path. If it's not, you wi
 
 == LICENSE
 
-Copyright (c) 2009 John Lees-Miller
+Copyright (c) 2009, 2010 John Lees-Miller
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

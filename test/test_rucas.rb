@@ -187,16 +187,16 @@ class TestRucas < Test::Unit::TestCase
 
   def test_unpatch
     # Patches are initially applied; unapply and then reapply.
-    assert_equal "1",             with_rucas { 1.simplify }.to_s
+    assert_equal "1",             Rucas.code { 1.simplify }.to_s
     Rucas::Extensions.unapply
-    assert_raise(NoMethodError) { with_rucas { 1.simplify } }
+    assert_raise(NoMethodError) { Rucas.code { 1.simplify } }
     Rucas::Extensions.apply
-    assert_equal "1",             with_rucas { 1.simplify }.to_s
+    assert_equal "1",             Rucas.code { 1.simplify }.to_s
     # Do it again to make sure it's really reversible.
     Rucas::Extensions.unapply
-    assert_raise(NoMethodError) { with_rucas { 1.simplify } }
+    assert_raise(NoMethodError) { Rucas.code { 1.simplify } }
     Rucas::Extensions.apply
-    assert_equal "1",             with_rucas { 1.simplify }.to_s
+    assert_equal "1",             Rucas.code { 1.simplify }.to_s
   end
 
   def test_match
