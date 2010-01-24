@@ -12,7 +12,7 @@ require 'facets/enumerable/sum'
 Rucas::Extensions.apply
 
 module Rucas
-  VERSION = '0.0.3'
+  VERSION = '0.0.4'
 
   #
   # Interpret code in the block as Rucas code and return the result of the
