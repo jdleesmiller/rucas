@@ -4,3 +4,11 @@
 === 0.0.2 2009-12-16
 * now using coerce (http://c2.com/cgi/wiki?RubyCoerce) to avoid patching so many of the Numeric classes; thanks to Ravil Bayramgalin (http://github.com/brainopia) for pointing this out.
 
+=== 0.0.3 2010-01-23
+* Added basic support for symbolic functions (e.g. log) and constants (e.g. e).
+* Simplification understands these (e.g. log[e] is 1).
+
+=== 0.0.4 2010-01-24
+* Changed with_rucas to Rucas.code for consistency with some changes to be committed later...
+* Updated readme, which wasn't done properly in 0.0.3.
+
